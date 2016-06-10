@@ -22,11 +22,12 @@ namespace Gmich.Results.Tests
         [TestMethod]
         public void FailedResult_Test()
         {
-            SuccessfulResult
+            FailedResult
             .OnSuccess(res =>
                 Assert.Fail("This should fail"))
             .OnFailure(res =>
                 Assert.IsTrue(res.Failure));
         }
+
     }
 }
