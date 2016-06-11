@@ -17,13 +17,13 @@ namespace Gmich.Results
             return stream.Where(c => c.Success);
         }
 
-        public static Result ForEach<TValue>(this IEnumerable<Result<TValue>> stream, Action<TValue> transformer)
+        public static Result ForEach<TValue>(this IEnumerable<Result<TValue>> stream, Action<TValue> action)
         {
             foreach(var res in stream)
             {
                 if(res.Success)
                 {
-                    transformer(res.Value);
+                    action(res.Value);
                 }
                 else
                 {
@@ -179,12 +179,7 @@ namespace Gmich.Results
             logger(msg + result.ErrorMessage);
             return result;
         }
-
-        public static Result<TNewValue> ChangeValue<TValue, TNewValue>(this Result<TValue> result, TNewValue newValue)
-        {
-            return new Result<TNewValue>(newValue, result.State, result.ErrorMessage);
-        }
-
+        
         public static Result<TValue> CombineErrorMessages<TValue>(this Result<TValue> result, Result other)
         {
             return Result.FailWith(result.Value, result.State, $"{result.ErrorMessage}. {other.ErrorMessage}");
@@ -223,7 +218,12 @@ namespace Gmich.Results
 
         #endregion
 
-        #region Change Value
+        #region Transformations
+
+        public static Result<TNewValue> As<TValue, TNewValue>(this Result<TValue> result, TNewValue newValue)
+        {
+            return new Result<TNewValue>(newValue, result.State, result.ErrorMessage);
+        }
 
         public static Result<TValue> As<TValue>(this Result result)
         {

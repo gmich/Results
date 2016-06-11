@@ -220,7 +220,7 @@ namespace Gmich.Results
         {
             if (value == null)
             {
-                return Result.FailWith<TValue>(State.Error, $"Provided value of type {typeof(TValue)} cannot be null.");
+                return Result.FailWith<TValue>(State.NotFound, $"Provided value of type {typeof(TValue)} cannot be null.");
             }
             return Ok(value);
         }
@@ -230,6 +230,11 @@ namespace Gmich.Results
         {
             return (value == true)
                 ? Result.Ok() : Result.FailWith(State.Error, "The provided value was false");
+        }
+
+        public static Result Test(Func<bool> valueGetter)
+        {
+            return Test(valueGetter());
         }
 
 
@@ -245,14 +250,6 @@ namespace Gmich.Results
             }
         }
 
-        public static Result<TValue> FailIfNull<TValue>(TValue value, string msg = "value was null")
-        {
-            if (value == null)
-            {
-                return FailWith<TValue>(State.NotFound, msg);
-            }
-            return Ok(value);
-        }
 
         #endregion
 
