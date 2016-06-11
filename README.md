@@ -6,6 +6,14 @@ A lightweight functional results library for synchronous chained code execution.
 
 ##Motivation
 
+Something can always go wrong in a program, a faulty database transaction, a network request timeout, or some bad input. Sometimes an exception is thrown, sometimes the function returns a null value, the list goes on and on, in other words: when a function is evaluated it can either: **succeed** or **fail**. 
+
+The result library adds some extra information to the return value:
+* a `State` enum that represents the executed function's state
+* an error message. 
+
+The flow of execution can continue by chaining functions, for example with `.OnSuccess(this Result<TValue> result, Action<TValue> action)` the value can be accessed **only on successful evaluation** through a delegate.
+
 ##Quickstart
 
 The Results library is available as a NuGet package. You can install it using the NuGet Package Console window:
@@ -43,14 +51,26 @@ The usage is pretty straightforward. Results are instantiated through static fac
     
   Result.Try(()=>"this is executed in a try catch block);
 ```
-  
-###Chaining the results
 
+**Examples**
+
+A method that returns `Result<int>`
 ```
   Result<int> Division(int dividend, int divisor) => 
      (divisor == 0)? 
       Result.FailWith<int>(State.Error, "Divide by zero error") : Result.Ok(dividend / divisor);
-     
+```
+
+The same method without the use of `Result.Ok()`. The return value is implicitly casted to `Result<int>`
+```
+  Result<int> Division(int dividend, int divisor) => 
+     (divisor == 0)? 
+      Result.FailWith<int>(State.Error, "Divide by zero error") : (dividend / divisor);
+```
+
+###Chaining the results
+
+```
   Division(dividend,divisor)
   .OnSuccess(result=> {} //do something with the successful result)
   .OnFailure(result=> {} //do something with the failed result)
@@ -74,16 +94,16 @@ The usage is pretty straightforward. Results are instantiated through static fac
 **Linq**
 
 ```
-  ListOfResults()
+  IEnumerableOfResults()
   .FilterSuccessful();
 ```
 
 ```
-  ListOfResults()
+  IEnumerableOfResults()
   .ForEach(res=> {} //do something with the successful results);  
 ```
 
 ```
-  ListOfResults()
+  IEnumerableOfResults()
   .AnyFailures();
 ```
