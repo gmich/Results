@@ -16,7 +16,7 @@ The flow of execution can continue by chaining functions, for example with `.OnS
 
 ##Quickstart
 
-The Results library is available as a NuGet package. You can install it using the NuGet Package Console window:
+The Results library is available as a [NuGet package](https://www.nuget.org/packages/Gmich.Results/). You can install it using the NuGet Package Console window:
 
     PM> Install-Package Gmich.Results
 
