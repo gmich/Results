@@ -26,7 +26,7 @@
 
         public static implicit operator Result<TValue>(TValue someValue)
         {
-            return RequireNotNull(someValue);
+            return Result.Ok(someValue);
         }
     }
 
