@@ -54,14 +54,14 @@ The usage is pretty straightforward. Results are instantiated through static fac
 
 **Examples**
 
-A method that returns `Result<int>`
+A method that returns `Result<int>`.
 ```
   Result<int> Division(int dividend, int divisor) => 
      (divisor == 0)? 
       Result.FailWith<int>(State.Error, "Divide by zero error") : Result.Ok(dividend / divisor);
 ```
 
-The same method without the use of `Result.Ok()`. The return value is implicitly casted to `Result<int>`
+The same method without the use of `Result.Ok()`. The return value is implicitly casted to `Result<int>`.
 ```
   Result<int> Division(int dividend, int divisor) => 
      (divisor == 0)? 
@@ -124,17 +124,19 @@ The results can be retried through the __Policy__ class.
 
 ###Future results
 
-The future results are results that can be chained, act as logic gates _(AND, OR, NOT)_ and are lazy evaluated. The performance overhead is minimal because the future results use __Expressions__;
+The future results are results that can be chained, act as logic gates _(AND, OR, NOT)_ and are lazy evaluated. The performance overhead is minimal because the future results use __Expressions__.
 
 **Creation**
 
-The instantiation is through a static class factory 
+The instantiation is through a static class factory.
 
 ```
     FutureResult.For(() => Result.Try(() => repository.FetchSomething()));
 ```
 
 **Chaining**
+
+The chaining is through extension methods that are named and act as logic gates.  
 
 ```
     //build a chain
