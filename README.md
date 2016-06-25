@@ -1,6 +1,7 @@
 # Results
 
 [![Build status](https://ci.appveyor.com/api/projects/status/pphkda8eq81bqc9w?svg=true)](https://ci.appveyor.com/project/gmich/results)
+[![Nuget downloads](https://img.shields.io/nuget/v/gmich.results.svg)](https://www.nuget.org/packages/gmich.results/)
 
 A lightweight functional results library for synchronous chained code execution.
 
