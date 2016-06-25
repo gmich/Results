@@ -72,9 +72,12 @@ The same method without the use of `Result.Ok()`. The return value is implicitly
 
 ```
   Division(dividend,divisor)
-  .OnSuccess(result=> {} //do something with the successful result)
-  .OnFailure(result=> {} //do something with the failed result)
+  .LogOnFailure(logger.Error) // logs the error message and state 
+  .Ensure(num => num > 0) // tests the result through a predicate
+  .OnSuccess(result=> {} // do something with the successful result)
+  .OnFailure(result=> {} // do something with the failed result)
   .OnBoth(result=> {} // do something either way);
+
 ```
 
 **Transform values**
@@ -107,3 +110,43 @@ The same method without the use of `Result.Ok()`. The return value is implicitly
   IEnumerableOfResults()
   .AnyFailures();
 ```
+
+###Retries
+
+The results can be retried through the __Policy__ class.
+
+```
+    Policy
+    .Retry(() => Result.RequireNotNull(repository.FetchSomething()), 
+           interval: TimeSpan.FromSeconds(20),
+           count: 3);
+```
+
+###Future results
+
+The future results are results that can be chained, act as logic gates _(AND, OR, NOT)_ and are lazy evaluated. The performance overhead is minimal because the future results use __Expressions__;
+
+**Creation**
+
+The instantiation is through a static class factory 
+
+```
+    FutureResult.For(() => Result.Try(() => repository.FetchSomething()));
+```
+
+**Chaining**
+
+```
+    //build a chain
+    var resultChain = 
+        firstFutureResult.And(second).And(third)
+        .Or(fourth)
+        .Not(fifth);
+    
+    resultChain
+    .Result // evaluate it
+    .OnSuccess(res => {} )
+    .OnFailure(res => {} );
+```
+
+
