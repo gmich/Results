@@ -166,20 +166,42 @@ namespace Gmich.Results
 
         #endregion
 
-        #region Misc
+        #region Log
 
         public static Result<TValue> Log<TValue>(this Result<TValue> result, Action<string> logger, string msg = "")
         {
-            logger(msg + result.ErrorMessage);
+            logger($"{msg}. {result.ToString()}");
+            return result;
+        }
+
+        public static Result<TValue> LogOnFailure<TValue>(this Result<TValue> result, Action<string> logger, string msg = "")
+        {
+            if (result.Failure)
+            {
+                logger($"{msg}. {result.ToString()}");
+            }
+            return result;
+        }
+
+        public static Result LogOnFailure(this Result result, Action<string> logger, string msg = "")
+        {
+            if (result.Failure)
+            {
+                logger($"{msg}. {result.ToString()}");
+            }
             return result;
         }
 
         public static Result Log(this Result result, Action<string> logger, string msg = "")
         {
-            logger(msg + result.ErrorMessage);
+            logger($"{msg}. {result.ToString()}");
             return result;
         }
-        
+
+        #endregion
+
+        #region Combine Error Messages
+
         public static Result<TValue> CombineErrorMessages<TValue>(this Result<TValue> result, Result other)
         {
             return Result.FailWith(result.Value, result.State, $"{result.ErrorMessage}. {other.ErrorMessage}");
@@ -188,6 +210,23 @@ namespace Gmich.Results
         public static Result CombineErrorMessages(this Result result, Result other)
         {
             return Result.FailWith(result.State, $"{result.ErrorMessage}. {other.ErrorMessage}");
+        }
+
+        #endregion
+
+        #region Assert
+
+        public static Result<TValue> Ensure<TValue>(this Result<TValue> result, Predicate<TValue> predicate, string failure = "")
+        {
+            if (result.Failure)
+            {
+                return result;
+            }
+            if (predicate(result.Value))
+            {
+                return result;
+            }
+            return Result.FailWith<TValue>(State.Error, "Failed to ensure the result. " + failure);
         }
 
         #endregion

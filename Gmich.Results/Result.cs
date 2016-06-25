@@ -250,6 +250,42 @@ namespace Gmich.Results
             }
         }
 
+        public static Result<TValue> Try<TValue>(Func<Result<TValue>> func)
+        {
+            try
+            {
+                return func();
+            }
+            catch (Exception ex)
+            {
+                return Result.FailWith<TValue>(State.Error, ex.Message);
+            }
+        }
+
+        public static Result Try(Func<Result> func, string additionalMessage)
+        {
+            try
+            {
+                return func();
+            }
+            catch (Exception ex)
+            {
+                return FailWith(State.Error, additionalMessage + ex.Message);
+            }
+        }
+
+        public static Result<TValue> Try<TValue>(Func<TValue> func, string additionalMessage)
+        {
+            try
+            {
+                return Result.Ok(func());
+            }
+            catch (Exception ex)
+            {
+                return Result.FailWith<TValue>(State.Error, additionalMessage + ex.Message);
+            }
+        }
+
 
         #endregion
 
