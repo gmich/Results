@@ -143,7 +143,8 @@ The chaining is through extension methods that are named and act as logic gates.
     var resultChain = 
         firstFutureResult.And(second).And(third)
         .Or(fourth)
-        .Not(fifth);
+        .And(fifth)
+        .Not;
     
     resultChain
     .Result // evaluate it
