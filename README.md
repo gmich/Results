@@ -1,6 +1,7 @@
 # Results
 
 [![Build status](https://ci.appveyor.com/api/projects/status/pphkda8eq81bqc9w?svg=true)](https://ci.appveyor.com/project/gmich/results)
+[![Nuget downloads](https://img.shields.io/nuget/v/gmich.results.svg)](https://www.nuget.org/packages/gmich.results/)
 
 A lightweight functional results library for synchronous chained code execution.
 
@@ -54,14 +55,14 @@ The usage is pretty straightforward. Results are instantiated through static fac
 
 **Examples**
 
-A method that returns `Result<int>`
+A method that returns `Result<int>`.
 ```
   Result<int> Division(int dividend, int divisor) => 
      (divisor == 0)? 
       Result.FailWith<int>(State.Error, "Divide by zero error") : Result.Ok(dividend / divisor);
 ```
 
-The same method without the use of `Result.Ok()`. The return value is implicitly casted to `Result<int>`
+The same method without the use of `Result.Ok()`. The return value is implicitly casted to `Result<int>`.
 ```
   Result<int> Division(int dividend, int divisor) => 
      (divisor == 0)? 
@@ -72,9 +73,12 @@ The same method without the use of `Result.Ok()`. The return value is implicitly
 
 ```
   Division(dividend,divisor)
-  .OnSuccess(result=> {} //do something with the successful result)
-  .OnFailure(result=> {} //do something with the failed result)
+  .LogOnFailure(logger.Error) // logs the error message and state 
+  .Ensure(num => num > 0) // tests the result through a predicate
+  .OnSuccess(result=> {} // do something with the successful result)
+  .OnFailure(result=> {} // do something with the failed result)
   .OnBoth(result=> {} // do something either way);
+
 ```
 
 **Transform values**
@@ -107,3 +111,46 @@ The same method without the use of `Result.Ok()`. The return value is implicitly
   IEnumerableOfResults()
   .AnyFailures();
 ```
+
+###Retries
+
+The results can be retried through the __Policy__ class.
+
+```
+    Policy
+    .Retry(() => Result.RequireNotNull(repository.FetchSomething()), 
+           interval: TimeSpan.FromSeconds(20),
+           count: 3);
+```
+
+###Future results
+
+The future results are results that can be chained, act as logic gates _(AND, OR, NOT)_ and are lazy evaluated. The performance overhead is minimal because the future results use __Expressions__.
+
+**Creation**
+
+The instantiation is through a static class factory.
+
+```
+    FutureResult.For(() => Result.Try(() => repository.FetchSomething()));
+```
+
+**Chaining**
+
+The chaining is through extension methods that are named and act as logic gates.  
+
+```
+    //build a chain
+    var resultChain = 
+        firstFutureResult.And(second).And(third)
+        .Or(fourth)
+        .And(fifth)
+        .Not;
+    
+    resultChain
+    .Result // evaluate it
+    .OnSuccess(res => {} )
+    .OnFailure(res => {} );
+```
+
+
