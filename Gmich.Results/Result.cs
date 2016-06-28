@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Gmich.Results
@@ -41,6 +42,110 @@ namespace Gmich.Results
         public static Result<TValue> FailWith<TValue>(TValue fallbackValue, State status, string message)
         {
             return new Result<TValue>(fallbackValue, status, message);
+        }
+
+        #endregion
+
+        #region Policies
+
+        public static Result Retry(
+            Action action,
+            TimeSpan interval,
+            int count = 3,
+            string msg = "")
+        {
+            for (int retry = 0; retry < count; retry++)
+            {
+                if (retry > 0)
+                    Thread.Sleep(interval);
+                try
+                {
+                    action();
+                    return Ok();
+                }
+                catch (Exception ex)
+                {
+                    return Result.FailWith(State.Error, ex.Message);
+                }
+            }
+            return Result.FailWith(State.Error, $"Maximum retries reached. {msg}.");
+        }
+
+        public static Result Retry(
+            Func<Result> func,
+            TimeSpan interval,
+            int count = 3,
+            string msg = "")
+        {
+            for (int retry = 0; retry < count; retry++)
+            {
+                if (retry > 0)
+                    Thread.Sleep(interval);
+                try
+                {
+                    var res = func();
+                    if (res.Failure) continue;
+                    else return res;
+                }
+                catch (Exception ex)
+                {
+                    return Result.FailWith(State.Error, ex.Message);
+                }
+            }
+            return Result.FailWith(State.Error, $"Maximum retries reached. {msg}.");
+        }
+
+        public static Result<T> Retry<T>(
+            Func<Result<T>> func,
+            TimeSpan interval,
+            int count = 3,
+            string msg = "")
+        {
+
+            for (int retry = 0; retry < count; retry++)
+            {
+                if (retry > 0)
+                {
+                    Thread.Sleep(interval);
+                }
+                try
+                {
+                    var res = func();
+                    if (res.Failure) continue;
+                    else return res;
+                }
+                catch (Exception ex)
+                {
+                    return Result.FailWith<T>(State.Error, ex.Message);
+                }
+            }
+            return Result.FailWith<T>(State.Error, $"Maximum retries reached. {msg}.");
+        }
+
+        public static Result<T> Retry<T>(
+            Func<T> func,
+            TimeSpan interval,
+            int count = 3,
+            string msg = "")
+        {
+
+            for (int retry = 0; retry < count; retry++)
+            {
+                if (retry > 0)
+                {
+                    Thread.Sleep(interval);
+                }
+                try
+                {
+                    var res = func();
+                    return Result.Ok(res);
+                }
+                catch (Exception ex)
+                {
+                    return Result.FailWith<T>(State.Error, ex.Message);
+                }
+            }
+            return Result.FailWith<T>(State.Error, $"Maximum retries reached. {msg}.");
         }
 
         #endregion
