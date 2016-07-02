@@ -14,8 +14,7 @@
 
         public override string ToString()
         {
-            var valueStr = (Value == null) ? "value" : Value.ToString();
-            return $"Success: { Success }. State: {State}. ValueType: {typeof(TValue)}. Value: {valueStr}";
+            return $"Success: { Success } , State: {State} , ValueType: {typeof(TValue)} , Value: {Value?.ToString() ?? "null"} , Message: {ErrorMessage ?? ""}";
         }
 
         protected internal Result(TValue value, State status, string error)

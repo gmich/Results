@@ -470,7 +470,7 @@ namespace Gmich.Results
 
         public override string ToString()
         {
-            return $"Success: { Success }. State: {State}";
+            return $"Success: { Success }. State: {State}. Message: {ErrorMessage ?? ""}.";
         }
 
         #endregion
