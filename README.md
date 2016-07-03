@@ -114,10 +114,10 @@ The same method without the use of `Result.Ok()`. The return value is implicitly
 
 ###Retries
 
-The results can be retried through the __Policy__ class.
+The results can be retried with interval and retry count using the __Result.Retry__ overloads.
 
 ```
-    Policy
+    Result
     .Retry(() => Result.RequireNotNull(repository.FetchSomething()), 
            interval: TimeSpan.FromSeconds(20),
            count: 3);
