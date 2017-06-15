@@ -5,7 +5,7 @@
 
 A lightweight functional results library for synchronous chained code execution.
 
-##Motivation
+## Motivation
 
 Something can always go wrong in a program, a faulty database transaction, a network request timeout, or some bad input. Sometimes an exception is thrown, sometimes the function returns a null value, the list goes on and on, in other words: when a function is evaluated it can either: **succeed** or **fail**. 
 
@@ -15,17 +15,17 @@ The result library adds some extra information to the return value:
 
 The flow of execution can continue by chaining functions, for example with `.OnSuccess(this Result<TValue> result, Action<TValue> action)` the value can be accessed **only on successful evaluation** through a delegate.
 
-##Quickstart
+## Quickstart
 
 The Results library is available as a [NuGet package](https://www.nuget.org/packages/Gmich.Results/). You can install it using the NuGet Package Console window:
 
     PM> Install-Package Gmich.Results
 
-##Usage
+## Usage
 
 The usage is pretty straightforward. Results are instantiated through static factories in the `Result` class. Then the results can be chained with a variety of extensions.
 
-###Create a new result
+### Create a new result
 
 **Non-generic**
 
@@ -69,7 +69,7 @@ The same method without the use of `Result.Ok()`. The return value is implicitly
       Result.FailWith<int>(State.Error, "Divide by zero error") : (dividend / divisor);
 ```
 
-###Chaining the results
+### Chaining the results
 
 ```
   Division(dividend,divisor)
@@ -112,7 +112,7 @@ The same method without the use of `Result.Ok()`. The return value is implicitly
   .AnyFailures();
 ```
 
-###Retries
+### Retries
 
 The results can be retried with interval and retry count using the __Result.Retry__ overloads.
 
@@ -123,7 +123,7 @@ The results can be retried with interval and retry count using the __Result.Retr
            count: 3);
 ```
 
-###Future results
+### Future results
 
 The future results are results that can be chained, act as logic gates _(AND, OR, NOT)_ and are lazy evaluated. The performance overhead is minimal because the future results use __Expressions__.
 
