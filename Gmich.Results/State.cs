@@ -6,6 +6,9 @@
         NotFound,
         Unauthorized,
         Forbidden,
-        Error
+        Warning,
+        Pending,
+        BadRequest,
+        Error,
     }
 }

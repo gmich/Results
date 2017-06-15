@@ -40,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Argument.cs" />
     <Compile Include="FutureResult.cs" />
     <Compile Include="GenericResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
